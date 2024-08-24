@@ -1,6 +1,8 @@
 using CityInfo.API;
+using CityInfo.API.DbContext;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -11,6 +13,7 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
+var str = builder.Configuration["CityInfoConnectionString"];
 
 builder.Host.UseSerilog();
 
@@ -27,6 +30,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 builder.Services.AddScoped<IMailService,LocalMailService>();
 builder.Services.AddSingleton<CitiesDataStore>();
+builder.Services.AddDbContext<CityInfoDbContext>(optionsAction =>
+      optionsAction.UseSqlServer(str)
+    );
 
 var app = builder.Build();
 
