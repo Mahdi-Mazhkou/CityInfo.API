@@ -27,7 +27,7 @@ namespace CityInfo.API.Controllers
           
             try
             {
-                throw new Exception("Salam Salam");
+                
                 if (city == null)
                 { 
                     _logger.LogInformation($"city with {cityId} not  found");

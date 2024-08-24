@@ -3,12 +3,14 @@ using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
     .WriteTo.File("logs/cityInfo.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
+
+var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Host.UseSerilog();
 
