@@ -1,0 +1,14 @@
+﻿using CityInfo.API.Entities;
+
+namespace CityInfo.API.Repositories
+{
+    public interface ICityInfoRepository
+    {
+        Task<IEnumerable<City>> GetCitiesAsync();
+        Task<City?> GetCityAsync(int cityId,bool includePointOfInterest);
+        Task<IEnumerable<PointOfInterest>> GetPointOfInterestForCityAsync(int cityId);
+        Task<PointOfInterest?> GetPointOfInterestForCity(int cityId,int pointOfInterestId);
+
+
+    }
+}
