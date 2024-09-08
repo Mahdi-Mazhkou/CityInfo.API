@@ -1,5 +1,6 @@
 ﻿using CityInfo.API.DbContext;
 using CityInfo.API.Entities;
+using CityInfo.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CityInfo.API.Repositories
@@ -34,6 +35,11 @@ namespace CityInfo.API.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<bool> CityExistsAsync(int cityId)
+        {
+            return await _context.Cities.AnyAsync(x => x.Id == cityId);
+        }
+
         public async Task<IEnumerable<PointOfInterest>> GetPointOfInterestForCityAsync(int cityId)
         {
             return await
@@ -43,13 +49,33 @@ namespace CityInfo.API.Repositories
                     .ToListAsync();
         }
 
-        public async Task<PointOfInterest?> GetPointOfInterestForCity(int cityId, int pointOfInterestId)
+        public async Task<PointOfInterest?> GetPointOfInterestForCityAsync(int cityId, int pointOfInterestId)
         {
             return await
                 _context
                     .PointOfInterests
                     .Where(p => p.CityId == cityId && p.Id==pointOfInterestId)
                     .FirstOrDefaultAsync();
+        }
+
+        public async Task  AddPointOfInterestDtoForCity(int cityId, PointOfInterest pointOfInterest)
+        {
+            var city = await GetCityAsync(cityId, false);
+            if(city!=null)
+            {
+                city.PointOfInterests.Add(pointOfInterest);
+            }
+            
+        }
+
+        public void DeletePointOfInterest(PointOfInterest pointOfInterest)
+        {
+            _context.PointOfInterests.Remove(pointOfInterest);
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _context.SaveChangesAsync() > 0);
         }
     }
 }

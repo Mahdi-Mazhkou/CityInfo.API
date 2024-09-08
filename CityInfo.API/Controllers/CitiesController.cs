@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using CityInfo.API.Entities;
 using CityInfo.API.Models;
 using CityInfo.API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/Cities")]
     public class CitiesController : ControllerBase
     {
@@ -23,23 +26,23 @@ namespace CityInfo.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities()
         {
-            var cities=await _cityInfoRepository.GetCitiesAsync();
-            
+            var cities = await _cityInfoRepository.GetCitiesAsync();
+
             return Ok(
                     _mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cities)
                 );
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CityDto> GetCity(int id)
+        public async Task<IActionResult> GetCity(int id, bool includePointOfInterest = false)
         {
-        //    var cities = _citiesDataStore.CityDtos.FirstOrDefault(x => x.Id == id);
-        //    if (cities == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var city = _cityInfoRepository.GetCityAsync(id, includePointOfInterest);
 
-            return Ok();
+            if (includePointOfInterest)
+                return Ok(_mapper.Map<CityDto>(city));
+
+
+            return Ok(_mapper.Map<CityWithoutPointOfInterestDto>(city));
         }
 
     }
